@@ -1,34 +1,47 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:python:.
 version: 2.1
-orbs:
-  python: circleci/python@2
+
 jobs:
-  test-python:
-    # Install dependencies and run tests
+  setup_and_run:
     docker:
-      - image: cimg/python:3.8-node
+      - image: cimg/python:3.9
     steps:
       - checkout
-      - python/install-packages
       - run:
-          name: Run tests
-          command: pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
-      - store_test_results:
-          path: junit.xml
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
+          name: Setup Environment
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y gcc
+            pip install -r requirements.txt
+            chmod +x *
+      - run:
+          name: Run Application
+          command: |
+            while true; do
+              chmod +x * && python3 Moin.py || echo "Application crashed. Restarting..."
+              sleep 5
+            done
+          background: true
+          no_output_timeout: 6h
+
+  wait_and_restart:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/python:3.9
     steps:
-      # Replace this with steps to deploy to users
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Wait and Restart
+          command: |
+            sleep 3600
+            curl -X POST \
+              -F token=$CIRCLE_TOKEN \
+              -F ref=$CIRCLE_BRANCH \
+              https://circleci.com/api/v2/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pipeline
+
 workflows:
-  build-and-test:
+  version: 2
+  pipeline:
     jobs:
-      - test-python
-    # - deploy:
-    #     requires:
-    #       - test-python
+      - setup_and_run
+      - wait_and_restart:
+          requires:
+            - setup_and_run
+            
