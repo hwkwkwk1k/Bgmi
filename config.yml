@@ -1,0 +1,25 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@2.0.3
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: |
+            python -m pip install --upgrade pip
+            pip install -r requirements.txt
+      - run:
+          name: Run Bot
+          command: python your_bot_script.py
+
+workflows:
+  version: 2
+  build_and_run:
+    jobs:
+      - build
