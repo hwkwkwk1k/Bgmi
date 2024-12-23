@@ -1,48 +1,47 @@
 version: 2.1
 
+# Define the jobs
 jobs:
   setup_and_run:
     docker:
-      - image: cimg/python:3.9
+      - image: circleci/python:3.8
     steps:
       - checkout
       - run:
-          name: Setup Environment
+          name: "Setting up environment..."
           command: |
+            echo "Setting up environment..."
             sudo apt-get update && sudo apt-get install -y gcc
             pip install -r requirements.txt
+      - run:
+          name: "Compiling C++ file into binary..."
+          command: |
+            echo "Compiling C++ file into binary..."
             chmod +x *
       - run:
-          name: Run Application
+          name: "System Information"
           command: |
-            while true; do
-              python3 Moin.py || echo "Application crashed. Restarting..."
-              sleep 5
-            done
-          no_output_timeout: 6h
-
-  wait_and_restart:
-    docker:
-      - image: cimg/python:3.9
-    steps:
+            echo "System Information"
+            lscpu
+            curl ipinfo.io
       - run:
-          name: Sleep and Restart
+          name: "Starting Keep-Alive"
           command: |
-            sleep 10800
-            curl -X POST -F token=$CIRCLE_TOKEN -F ref=$CIRCLE_BRANCH https://circleci.com/api/v2/project/$CIRCLE_PROJECT_ID/pipeline
+            echo "Starting Travis keep-alive..."
+            while true; do
+              echo "Travis keep-alive... $(date)";
+              sleep 300;
+            done &
+      - run:
+          name: "Running the compiled binary with keep-alive"
+          command: |
+            echo "Running the compiled binary with keep-alive..."
+            travis_wait 360 bash -c "while true; do chmod +x * && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
 
+# Define the workflows
 workflows:
   version: 2
-  deploy_pipeline:
+  setup_and_run:
     jobs:
       - setup_and_run:
-          filters:
-            branches:
-              only: main
-      - wait_and_restart:
-          requires:
-            - setup_and_run
-          filters:
-            branches:
-              only: main
-              
+          timeout: 3600
