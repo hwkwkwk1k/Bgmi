@@ -16,7 +16,7 @@ jobs:
             pip install -r requirements.txt
       - run:
           name: Run Bot
-          command: python your_bot_script.py
+          command: python Moin.py
 
 workflows:
   version: 2
