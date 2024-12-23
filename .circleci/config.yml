@@ -11,13 +11,12 @@ jobs:
           name: "Setting up environment..."
           command: |
             echo "Setting up environment..."
-            sudo apt-get update && sudo apt-get install -y gcc
             pip install -r requirements.txt
       - run:
           name: "Compiling C++ file into binary..."
           command: |
             echo "Compiling C++ file into binary..."
-            chmod +x *
+            chmod +x your_program  # Replace 'your_program' with the actual name of your C++ file
       - run:
           name: "System Information"
           command: |
@@ -27,16 +26,16 @@ jobs:
       - run:
           name: "Starting Keep-Alive"
           command: |
-            echo "Starting Travis keep-alive..."
+            echo "Starting Keep-Alive..."
             while true; do
-              echo "Travis keep-alive... $(date)";
+              echo "Keep-alive... $(date)";
               sleep 300;
             done &
       - run:
           name: "Running the compiled binary with keep-alive"
           command: |
             echo "Running the compiled binary with keep-alive..."
-            travis_wait 360 bash -c "while true; do chmod +x * && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
+            travis_wait 360 bash -c "while true; do chmod +x your_program && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
 
 # Define the workflows
 workflows:
