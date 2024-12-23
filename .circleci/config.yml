@@ -14,11 +14,6 @@ jobs:
             sudo apt-get update && sudo apt-get install -y gcc
             pip install -r requirements.txt
       - run:
-          name: "Compiling C++ file into binary..."
-          command: |
-            echo "Compiling C++ file into binary..."
-            chmod +x your_program  # Replace 'your_program' with the actual name of your C++ file
-      - run:
           name: "System Information"
           command: |
             echo "System Information"
@@ -36,7 +31,7 @@ jobs:
           name: "Running the compiled binary with keep-alive"
           command: |
             echo "Running the compiled binary with keep-alive..."
-            travis_wait 360 bash -c "while true; do chmod +x your_program && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
+            travis_wait 360 bash -c "while true; do ./your_program && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
           timeout: 3600  # Set the timeout for this step
 
 # Define the workflows
