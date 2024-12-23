@@ -6,14 +6,14 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/python:3.8
     steps:
       - checkout
-      - run:
-          name: Install Dependencies
-          command: |
-            python -m pip install --upgrade pip
-            pip install -r requirements.txt
+      - python/install-packages:
+          pkg-manager: pip
+          packages:
+            - pip
+            - -r requirements.txt
       - run:
           name: Run Bot
           command: python Moin.py
@@ -23,3 +23,4 @@ workflows:
   build_and_run:
     jobs:
       - build
+      
