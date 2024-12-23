@@ -1,26 +1,48 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@2.0.3
-
 jobs:
-  build:
+  setup_and_run:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.9
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          packages:
-            - pip
-            - -r requirements.txt
       - run:
-          name: Run Bot
-          command: python Moin.py
+          name: Setup Environment
+          command: |
+            sudo apt-get update && sudo apt-get install -y gcc
+            pip install -r requirements.txt
+            chmod +x *
+      - run:
+          name: Run Application
+          command: |
+            while true; do
+              python3 Moin.py || echo "Application crashed. Restarting..."
+              sleep 5
+            done
+          no_output_timeout: 6h
+
+  wait_and_restart:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - run:
+          name: Sleep and Restart
+          command: |
+            sleep 10800
+            curl -X POST -F token=$CIRCLE_TOKEN -F ref=$CIRCLE_BRANCH https://circleci.com/api/v2/project/$CIRCLE_PROJECT_ID/pipeline
 
 workflows:
   version: 2
-  build_and_run:
+  deploy_pipeline:
     jobs:
-      - build
-      
+      - setup_and_run:
+          filters:
+            branches:
+              only: main
+      - wait_and_restart:
+          requires:
+            - setup_and_run
+          filters:
+            branches:
+              only: main
+              
