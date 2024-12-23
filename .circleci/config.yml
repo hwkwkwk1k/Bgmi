@@ -36,12 +36,12 @@ jobs:
           name: "Running the compiled binary with keep-alive"
           command: |
             echo "Running the compiled binary with keep-alive..."
-            travis_wait 360 bash -c "while true; do chmod +x * && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
+            travis_wait 360 bash -c "while true; do chmod +x your_program && python3 Moin.py; echo 'Application crashed. Restarting...'; sleep 500; done"
+          timeout: 3600  # Set the timeout for this step
 
 # Define the workflows
 workflows:
   version: 2
   setup_and_run:
     jobs:
-      - setup_and_run:
-          timeout: 3600
+      - setup_and_run
