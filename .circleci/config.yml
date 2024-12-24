@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Run Bot
           command: |
-            Moin.py
+           python Moin.py
 
 workflows:
   version: 2
