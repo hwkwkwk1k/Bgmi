@@ -3,17 +3,16 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: python:3.9
+      - image: circleci/python:3.8  # Use the appropriate Python version
     steps:
       - checkout
       - run:
           name: Install Dependencies
           command: |
-            pip install pyTelegramBotAPI pymongo certifi
+            pip install -r requirements.txt  # Ensure you have a requirements.txt file
       - run:
           name: Run Bot
-          command: |
-           python Moin.py
+          command: python Moin.py  # Replace with your Python file name
 
 workflows:
   version: 2
