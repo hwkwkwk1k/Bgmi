@@ -13,11 +13,12 @@ jobs:
             pip install python-telegram-bot asyncio
       - run:
           name: Run Telegram Bot
-          command: RAHUL.py
+          command: python RAHUL.py
 
 workflows:
   version: 2
   build_and_run:
     jobs:
       - build
+      
       
