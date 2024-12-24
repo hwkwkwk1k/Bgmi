@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_hwkwkwk1k_Aw_1735068812035-push-trigger-input-set
+  identifier: Build_hwkwkwk1k_Aw_1735068812035pushtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_hwkwkwk1k_Aw_1735068812035
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
