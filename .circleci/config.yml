@@ -12,7 +12,7 @@ jobs:
             pip install -r requirements.txt  # Ensure you have a requirements.txt file
       - run:
           name: Run Bot
-          command: python your_script.py  # Replace with your Python file name
+          command: python Moin.py  # Replace with your Python file name
 
 workflows:
   version: 2
